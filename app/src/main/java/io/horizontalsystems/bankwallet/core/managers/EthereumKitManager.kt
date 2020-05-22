@@ -3,11 +3,13 @@ package io.horizontalsystems.bankwallet.core.managers
 import io.horizontalsystems.bankwallet.core.App
 import io.horizontalsystems.bankwallet.core.IEthereumKitManager
 import io.horizontalsystems.bankwallet.core.UnsupportedAccountException
+import io.horizontalsystems.bankwallet.core.hexToByteArray
 import io.horizontalsystems.bankwallet.entities.AccountType
 import io.horizontalsystems.bankwallet.entities.CommunicationMode
 import io.horizontalsystems.bankwallet.entities.Wallet
 import io.horizontalsystems.ethereumkit.core.EthereumKit
 import io.horizontalsystems.ethereumkit.core.EthereumKit.*
+import io.horizontalsystems.hdwalletkit.Mnemonic
 
 class EthereumKitManager(
         private val infuraProjectId: String,
@@ -39,7 +41,14 @@ class EthereumKitManager(
                 CommunicationMode.Incubed -> RpcApi.Incubed()
                 else -> throw Exception("Invalid communication mode for Ethereum: ${communicationMode?.value}")
             }
-            kit = EthereumKit.getInstance(App.instance, accountType.words, syncMode, networkType, rpcApi, etherscanApiKey, account.id)
+            kit = EthereumKit.getInstance(
+                    context = App.instance,
+                    seed = accountType.seed?.hexToByteArray() ?: Mnemonic().toSeed(accountType.words),
+                    wordsSyncMode = syncMode,
+                    networkType = networkType,
+                    rpcApi = rpcApi,
+                    etherscanKey = etherscanApiKey,
+                    walletId = account.id)
             kit?.start()
 
             return kit!!

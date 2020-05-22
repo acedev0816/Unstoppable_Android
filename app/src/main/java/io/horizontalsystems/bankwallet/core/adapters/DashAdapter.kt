@@ -1,9 +1,6 @@
 package io.horizontalsystems.bankwallet.core.adapters
 
-import io.horizontalsystems.bankwallet.core.AdapterState
-import io.horizontalsystems.bankwallet.core.App
-import io.horizontalsystems.bankwallet.core.ISendDashAdapter
-import io.horizontalsystems.bankwallet.core.UnsupportedAccountException
+import io.horizontalsystems.bankwallet.core.*
 import io.horizontalsystems.bankwallet.entities.AccountType
 import io.horizontalsystems.bankwallet.entities.SyncMode
 import io.horizontalsystems.bankwallet.entities.TransactionRecord
@@ -11,13 +8,12 @@ import io.horizontalsystems.bankwallet.entities.Wallet
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.models.BalanceInfo
 import io.horizontalsystems.bitcoincore.models.BlockInfo
-import io.horizontalsystems.core.helpers.DateHelper
 import io.horizontalsystems.dashkit.DashKit
 import io.horizontalsystems.dashkit.DashKit.NetworkType
 import io.horizontalsystems.dashkit.models.DashTransactionInfo
+import io.horizontalsystems.hdwalletkit.Mnemonic
 import io.reactivex.Single
 import java.math.BigDecimal
-import java.util.*
 
 class DashAdapter(
         override val kit: DashKit,
@@ -101,7 +97,7 @@ class DashAdapter(
             val accountType = account.type
             if (accountType is AccountType.Mnemonic && accountType.words.size == 12) {
                 return DashKit(context = App.instance,
-                        words = accountType.words,
+                        seed = accountType.seed?.hexToByteArray() ?: Mnemonic().toSeed(accountType.words),
                         walletId = account.id,
                         syncMode = getSyncMode(syncMode),
                         networkType = getNetworkType(testMode),

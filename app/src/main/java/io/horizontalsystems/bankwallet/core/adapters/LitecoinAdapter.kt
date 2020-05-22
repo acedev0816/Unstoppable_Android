@@ -1,19 +1,15 @@
 package io.horizontalsystems.bankwallet.core.adapters
 
-import io.horizontalsystems.bankwallet.core.AdapterState
-import io.horizontalsystems.bankwallet.core.App
-import io.horizontalsystems.bankwallet.core.ISendBitcoinAdapter
-import io.horizontalsystems.bankwallet.core.UnsupportedAccountException
+import io.horizontalsystems.bankwallet.core.*
 import io.horizontalsystems.bankwallet.entities.*
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.models.BalanceInfo
 import io.horizontalsystems.bitcoincore.models.BlockInfo
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
-import io.horizontalsystems.core.helpers.DateHelper
+import io.horizontalsystems.hdwalletkit.Mnemonic
 import io.horizontalsystems.litecoinkit.LitecoinKit
 import io.horizontalsystems.litecoinkit.LitecoinKit.NetworkType
 import java.math.BigDecimal
-import java.util.*
 
 class LitecoinAdapter(
         override val kit: LitecoinKit,
@@ -81,7 +77,7 @@ class LitecoinAdapter(
             val accountType = account.type
             if (accountType is AccountType.Mnemonic && accountType.words.size == 12) {
                 return LitecoinKit(context = App.instance,
-                        words = accountType.words,
+                        seed = accountType.seed?.hexToByteArray() ?: Mnemonic().toSeed(accountType.words),
                         walletId = account.id,
                         syncMode = getSyncMode(syncMode),
                         networkType = getNetworkType(testMode),

@@ -134,7 +134,7 @@ class App : CoreApp() {
         accountManager = AccountManager(accountsStorage, accountCleaner)
         backupManager = BackupManager(accountManager)
         walletManager = WalletManager(accountManager, walletStorage)
-        accountCreator = AccountCreator(AccountFactory(), wordsManager)
+        accountCreator = AccountCreator(wordsManager)
         predefinedAccountTypeManager = PredefinedAccountTypeManager(accountManager, accountCreator)
 
         KeyStoreManager("MASTER_KEY", KeyStoreCleaner(localStorage, accountManager, walletManager)).apply {

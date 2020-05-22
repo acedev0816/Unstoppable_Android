@@ -29,7 +29,7 @@ class AccountsStorage(appDatabase: AppDatabase) : IAccountsStorage {
                 .mapNotNull { record ->
                     try {
                         val accountType = when (record.type) {
-                            MNEMONIC -> AccountType.Mnemonic(record.words!!.list, record.salt?.value)
+                            MNEMONIC -> AccountType.Mnemonic(record.words!!.list, record.seed?.value, record.salt?.value)
                             PRIVATE_KEY -> AccountType.PrivateKey(record.key!!.value.hexToByteArray())
                             EOS -> AccountType.Eos(record.eosAccount!!, record.key!!.value)
                             else -> null
@@ -81,6 +81,7 @@ class AccountsStorage(appDatabase: AppDatabase) : IAccountsStorage {
                         origin = account.origin.value,
                         isBackedUp = account.isBackedUp,
                         words = if (account.type is AccountType.Mnemonic) SecretList(account.type.words) else null,
+                        seed = if (account.type is AccountType.Mnemonic) account.type.seed?.let { SecretString(it) } else null,
                         salt = if (account.type is AccountType.Mnemonic) account.type.salt?.let { SecretString(it) } else null,
                         key = getKey(account.type)?.let { SecretString(it) },
                         eosAccount = if (account.type is AccountType.Eos) account.type.account else null

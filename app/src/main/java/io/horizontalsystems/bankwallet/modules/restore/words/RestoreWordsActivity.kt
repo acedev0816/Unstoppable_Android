@@ -46,7 +46,7 @@ class RestoreWordsActivity : BaseActivity() {
 
         viewModel.notifyRestored.observe(this, Observer {
             setResult(RESULT_OK, Intent().apply {
-                putExtra(ModuleField.ACCOUNT_TYPE, AccountType.Mnemonic(viewModel.delegate.words, salt = null))
+                putExtra(ModuleField.ACCOUNT_TYPE, AccountType.Mnemonic(viewModel.delegate.words))
             })
             finish()
         })

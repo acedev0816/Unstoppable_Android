@@ -28,7 +28,7 @@ class Account(val id: String,
 @Parcelize
 open class AccountType : Parcelable {
     @Parcelize
-    data class Mnemonic(val words: List<String>, val salt: String?) : AccountType()
+    data class Mnemonic(val words: List<String>, var seed: String? = null, val salt: String? = null) : AccountType()
 
     @Parcelize
     data class PrivateKey(val key: ByteArray) : AccountType() {

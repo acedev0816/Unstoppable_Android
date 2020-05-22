@@ -13,6 +13,7 @@ data class AccountRecord(var id: String,
                          var origin: String,
                          var isBackedUp: Boolean,
                          var words: SecretList?,
+                         var seed: SecretString?,
                          var salt: SecretString?,
                          var key: SecretString?,
                          var eosAccount: String?) {

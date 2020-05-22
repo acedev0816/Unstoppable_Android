@@ -5,9 +5,11 @@ import io.horizontalsystems.hdwalletkit.Mnemonic
 
 class WordsManager : IWordsManager {
 
+    private val mnemonic = Mnemonic()
+
     @Throws(Mnemonic.MnemonicException::class)
     override fun validate(words: List<String>) {
-        Mnemonic().validate(words)
+        mnemonic.validate(words)
     }
 
     override fun generateWords(count: Int): List<String> {
@@ -16,7 +18,11 @@ class WordsManager : IWordsManager {
             else -> Mnemonic.Strength.Default
         }
 
-        return Mnemonic().generate(strength)
+        return mnemonic.generate(strength)
+    }
+
+    override fun generateSeed(words: List<String>): ByteArray {
+        return mnemonic.toSeed(words)
     }
 
 }

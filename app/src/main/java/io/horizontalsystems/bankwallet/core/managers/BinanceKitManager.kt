@@ -3,9 +3,11 @@ package io.horizontalsystems.bankwallet.core.managers
 import io.horizontalsystems.bankwallet.core.App
 import io.horizontalsystems.bankwallet.core.IBinanceKitManager
 import io.horizontalsystems.bankwallet.core.UnsupportedAccountException
+import io.horizontalsystems.bankwallet.core.hexToByteArray
 import io.horizontalsystems.bankwallet.entities.AccountType
 import io.horizontalsystems.bankwallet.entities.Wallet
 import io.horizontalsystems.binancechainkit.BinanceChainKit
+import io.horizontalsystems.hdwalletkit.Mnemonic
 
 class BinanceKitManager(
         private val testMode: Boolean
@@ -29,7 +31,12 @@ class BinanceKitManager(
                 BinanceChainKit.NetworkType.TestNet else
                 BinanceChainKit.NetworkType.MainNet
 
-            kit = BinanceChainKit.instance(App.instance, account.type.words, account.id, networkType)
+            kit = BinanceChainKit.instance(
+                    context = App.instance,
+                    seed = account.type.seed?.hexToByteArray() ?: Mnemonic().toSeed(account.type.words),
+                    walletId = account.id,
+                    networkType = networkType
+            )
             kit?.refresh()
 
             return kit!!

@@ -94,10 +94,6 @@ interface IAccountCreator {
     fun restoredAccount(accountType: AccountType): Account
 }
 
-interface IAccountFactory {
-    fun account(type: AccountType, origin: AccountOrigin, backedUp: Boolean): Account
-}
-
 interface IWalletStorage {
     fun wallets(accounts: List<Account>): List<Wallet>
     fun enabledCoins(): List<Coin>
@@ -147,6 +143,7 @@ interface ITransactionDataProviderManager {
 interface IWordsManager {
     fun validate(words: List<String>)
     fun generateWords(count: Int = 12): List<String>
+    fun generateSeed(words: List<String>): ByteArray
 }
 
 sealed class AdapterState {
